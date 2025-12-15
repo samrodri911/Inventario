@@ -1,0 +1,78 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model User {
+  id                        Int              @id @default(autoincrement())
+  email                     String           @unique
+  passwordHash              String?
+  displayName               String?
+  isEmailVerified           Boolean          @default(false)
+  createdAt                 DateTime         @default(now())
+  updatedAt                 DateTime         @updatedAt
+  currentHashedRefreshToken String?
+
+  oauthAccounts             OAuthAccount[]
+  stockMovements            StockMovement[]
+}
+
+model OAuthAccount {
+  id         Int      @id @default(autoincrement())
+  provider   String
+  providerId String
+  userId     Int
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt  DateTime @default(now())
+
+  @@unique([provider, providerId])
+}
+
+model Category {
+  id          Int      @id @default(autoincrement())
+  name        String   @unique
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  items       Item[]
+}
+
+model Item {
+  id              Int      @id @default(autoincrement())
+  name            String
+  description     String?
+  sku             String?  @unique // Código único del producto
+  currentStock    Int      @default(0)
+  minStock        Int      @default(0) // Stock mínimo (alerta de reorden)
+  price           Float?
+  categoryId      Int?
+  category        Category? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  stockMovements  StockMovement[]
+
+  @@index([categoryId])
+}
+
+model StockMovement {
+  id        Int      @id @default(autoincrement())
+  itemId    Int
+  userId    Int?
+  type      String   // "IN" (entrada) o "OUT" (salida)
+  quantity  Int      // Cantidad del movimiento
+  reason    String?  // Motivo: "compra", "venta", "ajuste", etc.
+  createdAt DateTime @default(now())
+
+  item      Item     @relation(fields: [itemId], references: [id], onDelete: Cascade)
+  user      User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([itemId])
+  @@index([userId])
+}
