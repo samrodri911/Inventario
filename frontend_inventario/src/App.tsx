@@ -11,6 +11,7 @@ import ItemForm from './pages/ItemForm';
 import ItemDetail from './pages/ItemDetail';
 import MovementForm from './pages/MovementForm';
 import CategoriesList from './pages/CategoriesList';
+import MovementsList from './pages/MovementsList';
 
 // Componente protector
 import ProtectedRoute from './components/ProtectedRoute';
@@ -109,6 +110,15 @@ function App() {
           element={
             <ProtectedRoute>
               <CategoriesList />
+            </ProtectedRoute>
+          } 
+        />
+        {/* Ver todos los movimientos */}
+        <Route 
+          path="/movements" 
+          element={
+            <ProtectedRoute>
+              <MovementsList />
             </ProtectedRoute>
           } 
         />
