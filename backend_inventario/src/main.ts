@@ -8,7 +8,12 @@ async function bootstrap() {
 
   // 2. CORS - Permitir conexiones del frontend
   app.enableCors({
-    origin: process.env.FRONTEND_URL || 'https://inventario-f16qgw6l2-samuels-projects-ecd2d119.vercel.app',
+    origin:  [
+    'https://inventario-blush-two.vercel.app',
+    'https://inventario-f16qgw6l2-samuels-projects-ecd2d119.vercel.app',
+    'http://localhost:5173',
+    'http://localhost:3000',
+  ],
     credentials: true,
   });
 
