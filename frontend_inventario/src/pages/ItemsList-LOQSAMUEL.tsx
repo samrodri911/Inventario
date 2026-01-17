@@ -1,11 +1,10 @@
 import { useEffect, useState } from 'react';
-import { Link, useNavigate, useSearchParams } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { itemsService } from '../services/items.service';
 import { categoriesService } from '../services/categories.service';
 import type { Item, Category } from '../types';
 
 function ItemsList() {
-  const navigate = useNavigate();
   const [searchParams] = useSearchParams();
 
   const [items, setItems] = useState<Item[]>([]);
